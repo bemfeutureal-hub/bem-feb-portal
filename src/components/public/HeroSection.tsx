@@ -87,61 +87,69 @@ export const HeroSection: React.FC = () => {
       <section
         className="relative text-white overflow-hidden py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-zinc-950 transition-colors duration-300 min-h-[480px] flex items-center"
       >
-        {/* 1. Latar Belakang Foto Kampus / Gambar Utama (Jelas & Terlihat) */}
+        {/* 1. Latar Belakang Foto Kampus / Gambar Utama (Jelas & Terlihat Indah) */}
         <div
-          className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 transform scale-100"
+          className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 transform scale-100 filter brightness-95 contrast-105"
           style={{ backgroundImage: `url(${heroBgImage})` }}
         />
 
-        {/* 2. Overlay Gradasi Merah Lebih Pudar & Merah Menyala (Agar Latar Belakang Terlihat) */}
+        {/* 2. Overlay Gradasi Merah Memikat & Bernyawa (Dipadukan Harmonis dengan Foto Latar Belakang) */}
         <div
           className="absolute inset-0 pointer-events-none transition-all duration-300"
           style={{
-            background: `linear-gradient(135deg, ${hexToRgba(visuals.heroBgGradientStart || '#dc2626', 0.65)} 0%, ${hexToRgba(visuals.heroBgGradientMiddle || '#ba0f23', 0.72)} 50%, ${hexToRgba(visuals.heroBgGradientEnd || '#800016', 0.80)} 100%)`,
+            background: `linear-gradient(135deg, ${hexToRgba(visuals.heroBgGradientStart || '#dc2626', 0.52)} 0%, ${hexToRgba(visuals.heroBgGradientMiddle || '#ba0f23', 0.64)} 40%, ${hexToRgba(visuals.heroBgGradientEnd || '#800016', 0.78)} 75%, rgba(55, 0, 10, 0.88) 100%)`,
           }}
         />
 
-        {/* 3. Vignette halus untuk keterbacaan teks dan transisi elegan */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+        {/* 3. Radial Lighting Glow (Kilau Merah Ruby & Aksen Emas yang Menyatu Lembut) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 20% 35%, rgba(255, 75, 95, 0.28) 0%, transparent 60%), radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.16) 0%, transparent 55%)',
+          }}
+        />
 
-        {/* 4. Pattern overlay halus */}
+        {/* 4. Vignette Halus untuk Kedalaman Visual & Keterbacaan Teks Maksimal */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+
+        {/* 5. Pattern overlay geometris halus */}
         {visuals.heroOverlayPattern !== false && (
-          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
+          <div className="absolute inset-0 opacity-12 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
         )}
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-7xl mx-auto relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Title & CTAs */}
-            <div className="lg:col-span-6 flex flex-col justify-center space-y-5">
+            <div className="lg:col-span-6 flex flex-col justify-center space-y-4 sm:space-y-5 text-center lg:text-left items-center lg:items-start">
               {/* Hashtag / Category Kicker */}
-              <div className="inline-flex items-center gap-2 text-white/90 text-sm font-semibold tracking-wide">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs border border-white/25 text-rose-100 text-xs sm:text-sm font-semibold tracking-wide">
                 <span>{currentSlide.hashtag}</span>
               </div>
 
               {/* Huge Bold Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.15] [text-wrap:balance]">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-[1.2] [text-wrap:balance] drop-shadow-sm">
                 {currentSlide.title}
               </h1>
 
               {/* Subtitle / Excerpt */}
-              <p className="text-white/85 text-sm sm:text-base font-normal leading-relaxed max-w-lg">
+              <p className="text-white/90 text-xs sm:text-base font-normal leading-relaxed max-w-lg drop-shadow-2xs">
                 {currentSlide.subtitle}
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              {/* Action Buttons with high touch targets for all devices */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
                 <button
                   onClick={() => scrollTo('berita-artikel')}
-                  className="px-6 py-2.5 bg-black/25 hover:bg-black/40 text-white text-xs sm:text-sm font-semibold rounded-full transition-all cursor-pointer shadow-md hover:shadow-lg border border-white/30 active:scale-95"
+                  className="px-6 py-3 sm:py-2.5 bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-bold rounded-full transition-all cursor-pointer shadow-md hover:shadow-lg border border-white/40 backdrop-blur-xs active:scale-95 text-center"
                 >
                   {currentSlide.ctaText || 'Selengkapnya'}
                 </button>
 
                 <button
                   onClick={() => setIsLaporModalOpen(true)}
-                  className="px-5 py-2.5 bg-white text-zinc-950 hover:bg-zinc-100 text-xs sm:text-sm font-bold rounded-full transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-95 flex items-center gap-1.5"
+                  className="px-6 py-3 sm:py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs sm:text-sm font-extrabold rounded-full transition-all cursor-pointer shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2"
                 >
-                  <ShieldCheck style={{ color: visuals.logoEmblemBg || '#800016' }} className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4 text-zinc-950" />
                   <span>{currentSlide.secondaryCtaText || 'Ajukan Laporan (Lapor BEM)'}</span>
                 </button>
               </div>

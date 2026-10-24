@@ -275,26 +275,30 @@ export const AboutCabinetSection: React.FC = () => {
                     Belum ada anggota staf tambahan yang didaftarkan pada departemen ini.
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5">
                     {activeDeptMembers.map((member) => (
                       <div
                         key={member.id}
-                        className="p-3.5 rounded border border-zinc-200 bg-white hover:border-zinc-300 transition-colors"
+                        className="p-3 sm:p-3.5 rounded-xl border border-zinc-200 bg-white hover:border-rose-200 hover:shadow-xs transition-all flex flex-col items-center sm:items-start text-center sm:text-left group"
                       >
                         {member.photoUrl ? (
                           <img
                             src={member.photoUrl}
                             alt={member.name}
-                            className="w-8 h-8 rounded-full object-cover border border-zinc-200 mb-2 shadow-2xs"
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            className="w-12 h-12 rounded-full sm:rounded-xl object-cover border-2 border-rose-100 mb-2 shadow-2xs group-hover:scale-105 transition-transform"
                           />
                         ) : (
-                          <div className="w-7 h-7 rounded-full bg-zinc-100 text-zinc-700 font-medium flex items-center justify-center text-[10px] mb-2 font-mono">
+                          <div className="w-12 h-12 rounded-full sm:rounded-xl bg-gradient-to-br from-rose-50 to-rose-100 text-[#800016] border border-rose-200 font-bold flex items-center justify-center text-xs mb-2 font-mono group-hover:scale-105 transition-transform">
                             {member.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
                           </div>
                         )}
-                        <h6 className="font-medium text-xs text-zinc-950 truncate">{member.name}</h6>
-                        <p className="text-[11px] text-[#800016] font-normal mt-0.5">{member.role}</p>
-                        <div className="mt-2 pt-2 border-t border-zinc-100 text-[10px] text-zinc-400 font-mono">
+                        <h6 className="font-bold text-xs text-zinc-950 truncate w-full">{member.name}</h6>
+                        <span className="inline-block text-[10px] text-[#800016] font-semibold mt-0.5">
+                          {member.role}
+                        </span>
+                        <div className="mt-2 pt-2 border-t border-zinc-100 text-[10px] text-zinc-400 font-mono w-full">
                           {member.prodi} · &apos;{member.generation.slice(-2)}
                         </div>
                       </div>

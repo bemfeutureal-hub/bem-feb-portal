@@ -358,10 +358,11 @@ export const AdminCabinetView: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded border border-zinc-200 overflow-hidden text-xs">
-            <table className="w-full text-left">
+          <div className="bg-white rounded border border-zinc-200 overflow-x-auto text-xs shadow-2xs">
+            <table className="w-full text-left min-w-[620px]">
               <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium uppercase tracking-wider text-[10px]">
                 <tr>
+                  <th className="py-2.5 px-3 w-12 text-center">Foto</th>
                   <th className="py-2.5 px-3">Nama Pengurus</th>
                   <th className="py-2.5 px-3">Jabatan</th>
                   <th className="py-2.5 px-3">Departemen</th>
@@ -373,11 +374,29 @@ export const AdminCabinetView: React.FC = () => {
               <tbody className="divide-y divide-zinc-100">
                 {filteredMembers.map((m) => (
                   <tr key={m.id} className="hover:bg-zinc-50 transition-colors">
+                    <td className="py-2 px-3 text-center">
+                      {m.photoUrl ? (
+                        <img
+                          src={m.photoUrl}
+                          alt={m.name}
+                          className="w-8 h-8 rounded-full object-cover border border-zinc-200 mx-auto shadow-2xs"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-rose-50 text-[#800016] border border-rose-200 font-bold flex items-center justify-center text-[10px] mx-auto font-mono">
+                          {m.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                        </div>
+                      )}
+                    </td>
                     <td className="py-2.5 px-3 font-medium text-zinc-950">
                       <span>{m.name}</span>
                       {m.isKadep && (
                         <span className="ml-2 text-[9px] font-mono text-[#800016] bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded font-semibold">
                           Ketua
+                        </span>
+                      )}
+                      {m.nim && (
+                        <span className="block text-[10px] text-zinc-400 font-mono mt-0.5">
+                          NIM: {m.nim}
                         </span>
                       )}
                     </td>
@@ -388,14 +407,14 @@ export const AdminCabinetView: React.FC = () => {
                     <td className="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
                       <button
                         onClick={() => handleOpenEditMember(m)}
-                        className="p-1 text-zinc-400 hover:text-zinc-800 rounded hover:bg-zinc-100"
-                        title="Edit Pengurus"
+                        className="p-1 text-zinc-400 hover:text-zinc-800 rounded hover:bg-zinc-100 cursor-pointer"
+                        title="Edit Pengurus & Foto"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteMember(m.id, m.name)}
-                        className="p-1 text-zinc-400 hover:text-rose-600 rounded hover:bg-zinc-100"
+                        className="p-1 text-zinc-400 hover:text-rose-600 rounded hover:bg-zinc-100 cursor-pointer"
                         title="Hapus Pengurus"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -677,8 +696,8 @@ export const AdminCabinetView: React.FC = () => {
               <div className="pt-2 border-t border-zinc-200">
                 <ImageUploadField
                   label="Foto Profil Pengurus / Staf"
-                  description="Foto formal staf untuk tampilan jajaran departemen"
-                  recommendedSize="Rasio 1:1 Square atau Pasfoto (JPG/PNG)"
+                  description="Foto formal staf untuk tampilan jajaran departemen & struktur organisasi"
+                  recommendedSize="Rasio 1:1 Square atau Pasfoto (JPG/PNG/WebP, ukuran di bawah 5MB)"
                   aspectRatio="square"
                   value={memberPhoto}
                   onChange={setMemberPhoto}

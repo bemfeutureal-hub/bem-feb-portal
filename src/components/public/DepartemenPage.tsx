@@ -188,15 +188,35 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
                   siteConfig.sambutan.wakilNim,
                   'Wakil Ketua BEM FEB UTU'
                 );
+
+                const ketuaMember = cabinetMembers.find(
+                  (m) => m.role.toLowerCase().includes('ketua bem') || (m.role.toLowerCase() === 'ketua' && m.departmentId === 'dept-bph')
+                );
+                const wakilMember = cabinetMembers.find(
+                  (m) => m.role.toLowerCase().includes('wakil ketua')
+                );
+                const ketuaPhoto = ketuaMember?.photoUrl || (siteConfig.sambutan as any).ketuaPhoto || '';
+                const wakilPhoto = wakilMember?.photoUrl || (siteConfig.sambutan as any).wakilPhoto || '';
+
                 return (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4">
-                      <div
-                        className="w-16 h-16 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs"
-                        style={{ backgroundColor: accent }}
-                      >
-                        {ketua.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                      </div>
+                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4 hover:border-rose-200 transition-all">
+                      {ketuaPhoto ? (
+                        <img
+                          src={ketuaPhoto}
+                          alt={ketua.name}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border-2 border-rose-200 shrink-0 shadow-xs"
+                        />
+                      ) : (
+                        <div
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs font-mono"
+                          style={{ backgroundColor: accent }}
+                        >
+                          {ketua.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                        </div>
+                      )}
                       <div>
                         <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
                           {ketua.role}
@@ -207,13 +227,23 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
                       </div>
                     </div>
 
-                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4">
-                      <div
-                        className="w-16 h-16 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs"
-                        style={{ backgroundColor: accent }}
-                      >
-                        {wakil.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                      </div>
+                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4 hover:border-rose-200 transition-all">
+                      {wakilPhoto ? (
+                        <img
+                          src={wakilPhoto}
+                          alt={wakil.name}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border-2 border-rose-200 shrink-0 shadow-xs"
+                        />
+                      ) : (
+                        <div
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs font-mono"
+                          style={{ backgroundColor: accent }}
+                        >
+                          {wakil.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                        </div>
+                      )}
                       <div>
                         <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
                           {wakil.role}
@@ -283,29 +313,33 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
                 <UserCheck className="w-5 h-5" style={{ color: accent }} />
                 Ketua Departemen
               </h2>
-              <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col sm:flex-row items-start gap-5 max-w-lg">
+              <div className="bg-white rounded-2xl border border-zinc-200 p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 max-w-xl shadow-xs hover:shadow-md transition-shadow">
                 {department.kadepPhoto ? (
                   <img
                     src={department.kadepPhoto}
                     alt={department.kadepName}
-                    className="w-20 h-20 rounded-xl object-cover border-2 border-zinc-100 shadow-sm shrink-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-rose-200 shadow-sm shrink-0"
                   />
                 ) : (
                   <div
-                    className="w-20 h-20 rounded-xl text-white font-bold text-xl flex items-center justify-center shrink-0"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl text-white font-bold text-2xl flex items-center justify-center shrink-0 shadow-sm font-mono"
                     style={{ backgroundColor: accent }}
                   >
                     {department.kadepName.split(' ').map(n => n[0]).slice(0, 2).join('')}
                   </div>
                 )}
-                <div>
-                  <p className="font-bold text-zinc-950 text-lg">{department.kadepName}</p>
-                  <p className="text-sm text-zinc-500 mb-1">Ketua {department.code}</p>
+                <div className="text-center sm:text-left">
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2.5 py-0.5 rounded border border-rose-200 mb-1.5 font-mono">
+                    Ketua {department.code}
+                  </span>
+                  <p className="font-bold text-zinc-950 text-lg leading-snug">{department.kadepName}</p>
                   {department.kadepProdi && (
-                    <p className="text-xs text-zinc-400 font-mono">{department.kadepProdi}{department.kadepNim && ` · NIM ${department.kadepNim}`}</p>
+                    <p className="text-xs text-zinc-500 font-mono mt-0.5">{department.kadepProdi}{department.kadepNim && ` · NIM ${department.kadepNim}`}</p>
                   )}
                   {department.kadepQuote && (
-                    <blockquote className="mt-3 text-sm italic text-zinc-600 border-l-2 pl-3" style={{ borderColor: accent }}>
+                    <blockquote className="mt-3 text-xs sm:text-sm italic text-zinc-600 border-l-2 pl-3 py-0.5 bg-zinc-50 rounded-r" style={{ borderColor: accent }}>
                       &ldquo;{department.kadepQuote}&rdquo;
                     </blockquote>
                   )}
@@ -321,7 +355,7 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
                   Jajaran Pengurus & Staf
                   <span className="text-xs font-mono text-zinc-400 font-normal">({members.length} orang)</span>
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                   {members.map((m) => (
                     <MemberCard key={m.id} member={m} accent={accent} />
                   ))}
@@ -342,25 +376,34 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
   );
 };
 
-const MemberCard: React.FC<{ member: CabinetMember; accent: string }> = ({ member, accent }) => (
-  <div className="bg-white rounded-xl border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-zinc-300 hover:shadow-sm transition-all">
-    {member.photoUrl ? (
-      <img
-        src={member.photoUrl}
-        alt={member.name}
-        className="w-16 h-16 rounded-full object-cover border-2 border-zinc-100 mb-3 shadow-sm"
-      />
-    ) : (
-      <div
-        className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-base mb-3 shadow-sm"
-        style={{ backgroundColor: accent }}
-      >
-        {member.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-      </div>
-    )}
-    <p className="font-semibold text-xs text-zinc-900 leading-tight mb-1">{member.name}</p>
-    <p className="text-[10px] text-zinc-500 leading-tight mb-1">{member.role}</p>
-    <p className="text-[10px] text-zinc-400 font-mono">{member.prodi}</p>
-    {member.nim && <p className="text-[10px] text-zinc-300 font-mono mt-0.5">{member.nim}</p>}
-  </div>
-);
+const MemberCard: React.FC<{ member: CabinetMember; accent: string }> = ({ member, accent }) => {
+  const [imgError, setImgError] = React.useState(false);
+
+  return (
+    <div className="bg-white rounded-xl border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-rose-200 hover:shadow-md transition-all group">
+      {member.photoUrl && !imgError ? (
+        <img
+          src={member.photoUrl}
+          alt={member.name}
+          onError={() => setImgError(true)}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full sm:rounded-2xl object-cover border-2 border-rose-100 mb-3 shadow-xs group-hover:scale-105 transition-transform"
+        />
+      ) : (
+        <div
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full sm:rounded-2xl flex items-center justify-center text-white font-bold text-base mb-3 shadow-xs font-mono group-hover:scale-105 transition-transform"
+          style={{ backgroundColor: accent }}
+        >
+          {member.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+        </div>
+      )}
+      <p className="font-bold text-xs sm:text-sm text-zinc-900 leading-tight mb-1 line-clamp-2">{member.name}</p>
+      <span className="inline-block text-[10px] font-semibold text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1 leading-tight">
+        {member.role}
+      </span>
+      <p className="text-[10px] text-zinc-500 font-mono">{member.prodi}</p>
+      {member.nim && <p className="text-[10px] text-zinc-400 font-mono mt-0.5">NIM {member.nim}</p>}
+    </div>
+  );
+};

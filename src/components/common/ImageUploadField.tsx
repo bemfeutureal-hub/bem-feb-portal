@@ -94,8 +94,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       return;
     }
 
-    if (file.size > 8 * 1024 * 1024) {
-      setErrorMsg('Ukuran file terlalu besar (maksimal 8MB). Silakan kompres gambar terlebih dahulu.');
+    if (file.size >= 5 * 1024 * 1024) {
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+      setErrorMsg(`Ukuran file terlalu besar (${sizeMb} MB). Mohon gunakan foto dengan ukuran di bawah 5MB.`);
       return;
     }
 
@@ -349,7 +350,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                     </span>
                   </div>
                   <p className="text-[10px] text-zinc-400 mt-0.5">
-                    Mendukung PNG, JPG, WebP, SVG transparan (maks 8MB)
+                    Mendukung JPG, PNG, WebP (maksimal di bawah 5MB · kompresi otomatis)
                   </p>
                 </div>
               </div>

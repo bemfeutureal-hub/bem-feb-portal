@@ -32,6 +32,17 @@ export const StrukturOrganisasiPage: React.FC<StrukturOrganisasiPageProps> = ({ 
     (m) => m.departmentId === 'dept-bph' || m.departmentName?.toLowerCase().includes('bph')
   );
 
+  // Check if there are cabinet member records explicitly with photos for Ketua and Wakil
+  const ketuaMember = cabinetMembers.find(
+    (m) => m.role.toLowerCase().includes('ketua bem') || (m.role.toLowerCase() === 'ketua' && m.departmentId === 'dept-bph')
+  );
+  const wakilMember = cabinetMembers.find(
+    (m) => m.role.toLowerCase().includes('wakil ketua')
+  );
+
+  const ketuaPhoto = ketuaMember?.photoUrl || (siteConfig.sambutan as any).ketuaPhoto || '';
+  const wakilPhoto = wakilMember?.photoUrl || (siteConfig.sambutan as any).wakilPhoto || '';
+
   // Helper to find specific role in BPH or fallback
   const getBphMember = (roleKeywords: string[], defaultRole: string, defaultName: string) => {
     const found = bphMembers.find((m) =>
@@ -123,12 +134,22 @@ export const StrukturOrganisasiPage: React.FC<StrukturOrganisasiPageProps> = ({ 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {/* Ketua BEM */}
-              <div className="bg-white rounded-xl border-2 border-rose-200/80 p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+              <div className="bg-white rounded-xl border-2 border-rose-200/80 p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-bl-full -z-0 opacity-50" />
                 <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
-                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-[#800016] to-[#50000e] text-white flex items-center justify-center font-bold text-2xl shadow-sm shrink-0 border-2 border-rose-100">
-                    {ketua.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                  </div>
+                  {ketuaPhoto ? (
+                    <img
+                      src={ketuaPhoto}
+                      alt={ketua.name}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border-2 border-rose-200 shadow-sm shrink-0 group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-[#800016] to-[#50000e] text-white flex items-center justify-center font-bold text-2xl shadow-sm shrink-0 border-2 border-rose-100 font-mono">
+                      {ketua.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                    </div>
+                  )}
                   <div>
                     <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
                       {ketua.role}
@@ -143,12 +164,22 @@ export const StrukturOrganisasiPage: React.FC<StrukturOrganisasiPageProps> = ({ 
               </div>
 
               {/* Wakil Ketua BEM */}
-              <div className="bg-white rounded-xl border-2 border-rose-200/80 p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+              <div className="bg-white rounded-xl border-2 border-rose-200/80 p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-bl-full -z-0 opacity-50" />
                 <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
-                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-[#800016] to-[#50000e] text-white flex items-center justify-center font-bold text-2xl shadow-sm shrink-0 border-2 border-rose-100">
-                    {wakil.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                  </div>
+                  {wakilPhoto ? (
+                    <img
+                      src={wakilPhoto}
+                      alt={wakil.name}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border-2 border-rose-200 shadow-sm shrink-0 group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-[#800016] to-[#50000e] text-white flex items-center justify-center font-bold text-2xl shadow-sm shrink-0 border-2 border-rose-100 font-mono">
+                      {wakil.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                    </div>
+                  )}
                   <div>
                     <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
                       {wakil.role}
@@ -261,10 +292,25 @@ export const StrukturOrganisasiPage: React.FC<StrukturOrganisasiPageProps> = ({ 
                       {dept.description}
                     </p>
 
-                    <div className="pt-3 border-t border-zinc-100 space-y-1.5 mb-5 text-xs">
-                      <div className="flex items-center justify-between">
+                    <div className="pt-3 border-t border-zinc-100 space-y-2 mb-5 text-xs">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="text-zinc-400">Kepala Satuan:</span>
-                        <span className="font-semibold text-zinc-800">{dept.kadepName}</span>
+                        <div className="flex items-center gap-2 font-semibold text-zinc-800 min-w-0">
+                          {dept.kadepPhoto ? (
+                            <img
+                              src={dept.kadepPhoto}
+                              alt={dept.kadepName}
+                              loading="lazy"
+                              referrerPolicy="no-referrer"
+                              className="w-5 h-5 rounded-full object-cover border border-rose-200 shrink-0 shadow-2xs"
+                            />
+                          ) : (
+                            <div className="w-5 h-5 rounded-full bg-rose-50 text-[#800016] border border-rose-200 text-[9px] font-bold flex items-center justify-center shrink-0 font-mono">
+                              {dept.kadepName.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                            </div>
+                          )}
+                          <span className="truncate max-w-[140px] sm:max-w-[160px]">{dept.kadepName}</span>
+                        </div>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-zinc-400">Fokus Kerja:</span>
@@ -272,14 +318,14 @@ export const StrukturOrganisasiPage: React.FC<StrukturOrganisasiPageProps> = ({ 
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-zinc-400">Jumlah Anggota:</span>
-                        <span className="font-mono text-zinc-700">{memberCount} orang</span>
+                        <span className="font-mono text-zinc-700 font-semibold">{memberCount} orang</span>
                       </div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onNavigate({ type: 'departemen', deptId: dept.id })}
-                    className="w-full py-2 px-3 bg-zinc-50 hover:bg-[#800016] hover:text-white text-zinc-700 text-xs font-medium rounded-lg border border-zinc-200 hover:border-[#800016] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-2 px-3 bg-zinc-50 hover:bg-[#800016] hover:text-white text-zinc-700 text-xs font-medium rounded-lg border border-zinc-200 hover:border-[#800016] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
                   >
                     <span>Buka Halaman Departemen</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -303,26 +349,33 @@ interface BphCardProps {
   photoUrl?: string;
 }
 
-const BphCard: React.FC<BphCardProps> = ({ role, subRole, name, nim, prodi, photoUrl }) => (
-  <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col items-center text-center hover:border-zinc-300 hover:shadow-sm transition-all">
-    {photoUrl ? (
-      <img
-        src={photoUrl}
-        alt={name}
-        className="w-16 h-16 rounded-full object-cover border-2 border-zinc-100 mb-3 shadow-xs"
-      />
-    ) : (
-      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-50 to-rose-100 text-[#800016] border border-rose-200 flex items-center justify-center font-bold text-lg mb-3 shadow-xs">
-        {name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-      </div>
-    )}
+const BphCard: React.FC<BphCardProps> = ({ role, subRole, name, nim, prodi, photoUrl }) => {
+  const [imgError, setImgError] = React.useState(false);
 
-    <span className="text-[10px] font-bold uppercase tracking-wider text-[#800016] mb-0.5">
-      {role}
-    </span>
-    <p className="text-[10px] text-zinc-400 font-mono mb-2">{subRole}</p>
-    <h4 className="font-bold text-sm text-zinc-950 leading-tight mb-1">{name}</h4>
-    {nim && <p className="text-[11px] text-zinc-500 font-mono">NIM {nim}</p>}
-    {prodi && <p className="text-[10px] text-zinc-400 mt-0.5">{prodi}</p>}
-  </div>
-);
+  return (
+    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col items-center text-center hover:border-rose-300 hover:shadow-md transition-all group">
+      {photoUrl && !imgError ? (
+        <img
+          src={photoUrl}
+          alt={name}
+          onError={() => setImgError(true)}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className="w-18 h-18 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-rose-200 mb-3 shadow-xs group-hover:scale-105 transition-transform"
+        />
+      ) : (
+        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-50 to-rose-100 text-[#800016] border-2 border-rose-200 flex items-center justify-center font-bold text-lg mb-3 shadow-xs font-mono group-hover:scale-105 transition-transform">
+          {name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+        </div>
+      )}
+
+      <span className="text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
+        {role}
+      </span>
+      <p className="text-[10px] text-zinc-400 font-mono mb-2">{subRole}</p>
+      <h4 className="font-bold text-sm text-zinc-950 leading-tight mb-1">{name}</h4>
+      {nim && <p className="text-[11px] text-zinc-500 font-mono">NIM {nim}</p>}
+      {prodi && <p className="text-[10px] text-zinc-400 mt-0.5">{prodi}</p>}
+    </div>
+  );
+};
