@@ -108,7 +108,16 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         return;
       }
 
-      // Auto-compress and resize image using HTML5 Canvas
+      // Auto-compress and resize image using HTML5 Canvas while preserving PNG transparency
+      const isPngOrSvg = file.type === 'image/png' || file.type === 'image/svg+xml';
+      
+      // If it's SVG, preserve vector directly
+      if (file.type === 'image/svg+xml') {
+        onChange(rawDataUrl);
+        setLoading(false);
+        return;
+      }
+
       const img = new Image();
       img.onload = () => {
         const MAX_WIDTH = 1200;
@@ -131,9 +140,13 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         if (ctx) {
+          // Do NOT fill any background color to keep transparent pixels transparent!
+          ctx.clearRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
-          // Export as optimized JPEG
-          const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          
+          // Export as PNG if source was PNG to keep transparent alpha channel
+          const outputMime = isPngOrSvg ? 'image/png' : 'image/jpeg';
+          const optimizedDataUrl = isPngOrSvg ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.82);
           onChange(optimizedDataUrl);
         } else {
           onChange(rawDataUrl);
