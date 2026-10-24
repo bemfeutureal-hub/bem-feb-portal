@@ -74,25 +74,25 @@ export const PublicNavbar: React.FC<PublicNavbarProps> = ({ onNavigate, currentP
   };
 
   const navItems = [
-    { label: 'Beranda', id: 'beranda' },
+    { label: 'Beranda', id: 'beranda', page: 'home' as PublicPage },
     {
-      label: 'Tentang Kami', id: 'tentang-kabinet', dropdown: 'tentang',
+      label: 'Tentang Kami', id: 'tentang-kabinet', dropdown: 'tentang', page: 'tentang-kami' as PublicPage,
       children: [
-        { label: `Kabinet ${siteConfig.cabinetName}`, id: 'tentang-kabinet' },
-        { label: 'Struktur Organisasi', id: 'tentang-kabinet' },
-        { label: 'Program Kerja', id: 'program-kerja' },
+        { label: `Kabinet ${siteConfig.cabinetName}`, page: 'tentang-kami' as PublicPage },
+        { label: 'Struktur Organisasi & Teras BPH', page: 'struktur-organisasi' as PublicPage },
+        { label: 'Program Kerja Kabinet', page: 'program-kerja' as PublicPage },
       ],
     },
     { label: 'Departemen', id: 'tentang-kabinet', dropdown: 'dept', isDept: true },
     {
-      label: 'Informasi Publik', id: 'berita-artikel', dropdown: 'info',
+      label: 'Informasi Publik', id: 'berita-artikel', dropdown: 'info', page: 'informasi-publik' as PublicPage,
       children: [
         { label: 'Semua Publikasi', page: 'informasi-publik' as PublicPage },
         { label: 'Warta & Kabar Kampus', page: 'informasi-publik-kabar-kampus' as PublicPage },
         { label: 'Kajian & Opini', page: 'informasi-publik-kajian' as PublicPage },
         { label: 'Siaran Pers Resmi', page: 'informasi-publik-siaran-pers' as PublicPage },
         { label: '—', divider: true },
-        { label: 'Unduhan SOP & Dokumen', id: 'dokumen' },
+        { label: 'Unduhan SOP & Dokumen', page: 'unduhan-dokumen' as PublicPage },
       ],
     },
   ];
@@ -220,7 +220,10 @@ export const PublicNavbar: React.FC<PublicNavbarProps> = ({ onNavigate, currentP
                 onMouseLeave={() => item.dropdown ? setActiveDropdown(null) : undefined}
               >
                 <button
-                  onClick={() => scrollTo(item.id)}
+                  onClick={() => {
+                    if (item.page) navigateTo(item.page);
+                    else scrollTo(item.id);
+                  }}
                   className="flex items-center gap-1 px-2.5 xl:px-3 py-2 rounded-md text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 transition-colors cursor-pointer whitespace-nowrap"
                 >
                   <span>{item.label}</span>
@@ -252,22 +255,24 @@ export const PublicNavbar: React.FC<PublicNavbarProps> = ({ onNavigate, currentP
                         ))}
                       </div>
                     ) : (
-                      item.children?.map((child, ci) => (
-                        'divider' in child ? (
-                          <div key={`div-${ci}`} className="my-1 border-t border-zinc-100" />
-                        ) : (
+                      item.children?.map((child, ci) => {
+                        if ('divider' in child && child.divider) {
+                          return <div key={`div-${ci}`} className="my-1 border-t border-zinc-100" />;
+                        }
+                        const c = child as { label: string; page?: PublicPage; id?: string };
+                        return (
                           <button
-                            key={child.label}
+                            key={c.label}
                             onClick={() => {
-                              if ('page' in child && child.page) navigateTo(child.page);
-                              else if ('id' in child && child.id) scrollTo(child.id);
+                              if (c.page) navigateTo(c.page);
+                              else if (c.id) scrollTo(c.id);
                             }}
                             className="w-full text-left px-4 py-2 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
                           >
-                            {child.label}
+                            {c.label}
                           </button>
-                        )
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 )}
@@ -337,14 +342,15 @@ export const PublicNavbar: React.FC<PublicNavbarProps> = ({ onNavigate, currentP
             <nav className="px-4 py-2">
               {[
                 { label: 'Beranda', action: () => { setMobileMenuOpen(false); if (onNavigate) onNavigate('home'); window.scrollTo({top:0}); } },
-                { label: 'Tentang Kami & Presidium', action: () => scrollTo('tentang-kabinet') },
-                { label: `Departemen (${departments.length})`, action: () => scrollTo('tentang-kabinet') },
+                { label: `Kabinet ${siteConfig.cabinetName}`, action: () => navigateTo('tentang-kami') },
+                { label: 'Struktur Organisasi & Teras BPH', action: () => navigateTo('struktur-organisasi') },
+                { label: 'Program Kerja Kabinet', action: () => navigateTo('program-kerja') },
+                { label: `Departemen & Biro (${departments.length})`, action: () => navigateTo('struktur-organisasi') },
                 { label: 'Semua Informasi Publik', action: () => navigateTo('informasi-publik') },
                 { label: 'Kabar & Warta Kampus', action: () => navigateTo('informasi-publik-kabar-kampus') },
                 { label: 'Kajian & Opini', action: () => navigateTo('informasi-publik-kajian') },
                 { label: 'Siaran Pers Resmi', action: () => navigateTo('informasi-publik-siaran-pers') },
-                { label: 'Agenda & Program Kerja', action: () => scrollTo('program-kerja') },
-                { label: 'Unduhan SOP & Form Banding UKT', action: () => scrollTo('dokumen') },
+                { label: 'Unduhan SOP & Dokumen', action: () => navigateTo('unduhan-dokumen') },
               ].map((item) => (
                 <button
                   key={item.label}

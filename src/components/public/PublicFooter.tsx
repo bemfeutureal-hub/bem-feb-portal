@@ -71,31 +71,51 @@ export const PublicFooter: React.FC<PublicFooterProps> = ({ onNavigate, onAdminC
               Kanal Navigasi
             </h4>
             <ul className="space-y-1.5 text-xs text-zinc-400">
-              <li><a href="#beranda" className="hover:text-white transition-colors">Beranda Portal</a></li>
-              <li><a href="#lapor-bem" className="hover:text-white text-zinc-200 font-medium transition-colors">Lapor BEM FEB</a></li>
-              <li><a href="#tentang-kabinet" className="hover:text-white transition-colors">Profil Kabinet & Visi</a></li>
               <li>
-                <button onClick={() => navTo('informasi-publik')} className="hover:text-white transition-colors text-left">
+                <button onClick={() => navTo('home')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Beranda Portal
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navTo('tentang-kami')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Profil Kabinet & Visi
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navTo('struktur-organisasi')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Struktur Organisasi & Teras
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navTo('program-kerja')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Program Kerja Kabinet
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navTo('informasi-publik')} className="hover:text-white transition-colors text-left cursor-pointer">
                   Informasi Publik
                 </button>
               </li>
               <li>
-                <button onClick={() => navTo('informasi-publik-kabar-kampus')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500">
+                <button onClick={() => navTo('informasi-publik-kabar-kampus')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500 cursor-pointer">
                   └ Kabar Kampus
                 </button>
               </li>
               <li>
-                <button onClick={() => navTo('informasi-publik-kajian')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500">
+                <button onClick={() => navTo('informasi-publik-kajian')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500 cursor-pointer">
                   └ Kajian & Opini
                 </button>
               </li>
               <li>
-                <button onClick={() => navTo('informasi-publik-siaran-pers')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500">
+                <button onClick={() => navTo('informasi-publik-siaran-pers')} className="hover:text-white transition-colors text-left pl-3 text-zinc-500 cursor-pointer">
                   └ Siaran Pers
                 </button>
               </li>
-              <li><a href="#program-kerja" className="hover:text-white transition-colors">Program Kerja</a></li>
-              <li><a href="#dokumen" className="hover:text-white transition-colors">Unduhan SOP Dokumen</a></li>
+              <li>
+                <button onClick={() => navTo('unduhan-dokumen')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Unduhan SOP & Dokumen
+                </button>
+              </li>
             </ul>
           </div>
 

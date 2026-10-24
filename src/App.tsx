@@ -13,6 +13,10 @@ import { DownloadsSection } from './components/public/DownloadsSection';
 import { PublicFooter } from './components/public/PublicFooter';
 import { InformasiPublikPage } from './components/public/InformasiPublikPage';
 import { DepartemenPage } from './components/public/DepartemenPage';
+import { TentangKamiPage } from './components/public/TentangKamiPage';
+import { StrukturOrganisasiPage } from './components/public/StrukturOrganisasiPage';
+import { ProgramKerjaPage } from './components/public/ProgramKerjaPage';
+import { UnduhanPage } from './components/public/UnduhanPage';
 
 import { LaporCreateModal } from './components/public/LaporCreateModal';
 import { LaporTrackerModal } from './components/public/LaporTrackerModal';
@@ -34,6 +38,10 @@ import { Department } from './types';
 // ── Public page types ────────────────────────────────────────────────────────
 export type PublicPage =
   | 'home'
+  | 'tentang-kami'
+  | 'struktur-organisasi'
+  | 'program-kerja'
+  | 'unduhan-dokumen'
   | 'informasi-publik'
   | 'informasi-publik-kabar-kampus'
   | 'informasi-publik-kajian'
@@ -90,6 +98,30 @@ const MainContent: React.FC = () => {
         return;
       }
 
+      if (pageParam === 'tentang-kami' || pageParam === 'tentang' || pageParam === 'kabinet') {
+        setPublicPage('tentang-kami');
+        setAppView('public');
+        return;
+      }
+
+      if (pageParam === 'struktur-organisasi' || pageParam === 'struktur') {
+        setPublicPage('struktur-organisasi');
+        setAppView('public');
+        return;
+      }
+
+      if (pageParam === 'program-kerja' || pageParam === 'proker') {
+        setPublicPage('program-kerja');
+        setAppView('public');
+        return;
+      }
+
+      if (pageParam === 'unduhan' || pageParam === 'unduhan-dokumen' || pageParam === 'dokumen') {
+        setPublicPage('unduhan-dokumen');
+        setAppView('public');
+        return;
+      }
+
       if (pageParam === 'informasi-publik') {
         const cat = params.get('cat');
         if (cat === 'Kabar Kampus') setPublicPage('informasi-publik-kabar-kampus');
@@ -117,6 +149,14 @@ const MainContent: React.FC = () => {
       url.search = '';
     } else if (typeof page === 'object' && page.type === 'departemen') {
       url.search = `?dept=${encodeURIComponent(page.deptId)}`;
+    } else if (page === 'tentang-kami') {
+      url.search = '?page=tentang-kami';
+    } else if (page === 'struktur-organisasi') {
+      url.search = '?page=struktur-organisasi';
+    } else if (page === 'program-kerja') {
+      url.search = '?page=program-kerja';
+    } else if (page === 'unduhan-dokumen') {
+      url.search = '?page=unduhan';
     } else if (page === 'informasi-publik' || page === 'informasi-publik-kabar-kampus' || page === 'informasi-publik-kajian' || page === 'informasi-publik-siaran-pers') {
       const searchParts: string[] = ['page=informasi-publik'];
       if (postId) {
@@ -225,6 +265,14 @@ const MainContent: React.FC = () => {
           <main className="flex-1">
             {isDeptPage && currentDept ? (
               <DepartemenPage department={currentDept} onClose={() => navigatePublic('home')} />
+            ) : publicPage === 'tentang-kami' ? (
+              <TentangKamiPage onNavigate={navigatePublic} onBack={() => navigatePublic('home')} />
+            ) : publicPage === 'struktur-organisasi' ? (
+              <StrukturOrganisasiPage onNavigate={navigatePublic} onBack={() => navigatePublic('home')} />
+            ) : publicPage === 'program-kerja' ? (
+              <ProgramKerjaPage onBack={() => navigatePublic('home')} />
+            ) : publicPage === 'unduhan-dokumen' ? (
+              <UnduhanPage onBack={() => navigatePublic('home')} />
             ) : isInformasiPublik ? (
               <InformasiPublikPage
                 initialCategory={getInitialCategory()}
@@ -256,7 +304,7 @@ const MainContent: React.FC = () => {
             )}
           </main>
 
-          {!isInformasiPublik && !isDeptPage && <PublicFooter onNavigate={navigatePublic} onAdminClick={goToAdmin} />}
+          <PublicFooter onNavigate={navigatePublic} onAdminClick={goToAdmin} />
 
           <LaporCreateModal />
           <LaporTrackerModal />

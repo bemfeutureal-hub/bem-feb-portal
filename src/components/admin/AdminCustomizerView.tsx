@@ -1563,60 +1563,78 @@ export const AdminCustomizerView: React.FC = () => {
             <h3 className="font-bold text-sm text-zinc-950 mb-3">Data Pimpinan Presidium (Ketua & Wakil)</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-3 bg-zinc-50 rounded border border-zinc-200 space-y-2">
-                <span className="font-semibold text-zinc-800">Ketua BEM</span>
-                <input
-                  type="text"
-                  placeholder="Nama Ketua..."
-                  value={formData.sambutan.ketuaName}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sambutan: { ...formData.sambutan, ketuaName: e.target.value },
-                    })
-                  }
-                  className="w-full px-2 py-1 bg-white border border-zinc-300 rounded font-medium"
-                />
-                <input
-                  type="text"
-                  placeholder="NIM Ketua..."
-                  value={formData.sambutan.ketuaNim}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sambutan: { ...formData.sambutan, ketuaNim: e.target.value },
-                    })
-                  }
-                  className="w-full px-2 py-1 bg-white border border-zinc-300 rounded font-mono text-[11px]"
-                />
+              <div className="p-3.5 bg-zinc-50 rounded-lg border border-zinc-200 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-xs text-zinc-900">Ketua BEM FEB UTU</span>
+                  <span className="text-[10px] text-zinc-400 font-mono">Presidium 1</span>
+                </div>
+                <div>
+                  <label className="block text-[11px] text-zinc-600 mb-1">Nama Lengkap Ketua</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Ahmad Saifullah"
+                    value={formData.sambutan.ketuaName}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        sambutan: { ...formData.sambutan, ketuaName: e.target.value },
+                      })
+                    }
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-300 rounded text-xs font-medium focus:ring-1 focus:ring-[#800016]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-zinc-600 mb-1">NIM Ketua</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: 210101001"
+                    value={formData.sambutan.ketuaNim}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        sambutan: { ...formData.sambutan, ketuaNim: e.target.value },
+                      })
+                    }
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-300 rounded font-mono text-xs focus:ring-1 focus:ring-[#800016]"
+                  />
+                </div>
               </div>
 
-              <div className="p-3 bg-zinc-50 rounded border border-zinc-200 space-y-2">
-                <span className="font-semibold text-zinc-800">Wakil Ketua BEM</span>
-                <input
-                  type="text"
-                  placeholder="Nama Wakil..."
-                  value={formData.sambutan.wakilName}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sambutan: { ...formData.sambutan, wakilName: e.target.value },
-                    })
-                  }
-                  className="w-full px-2 py-1 bg-white border border-zinc-300 rounded font-medium"
-                />
-                <input
-                  type="text"
-                  placeholder="NIM Wakil..."
-                  value={formData.sambutan.wakilNim}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sambutan: { ...formData.sambutan, wakilNim: e.target.value },
-                    })
-                  }
-                  className="w-full px-2 py-1 bg-white border border-zinc-300 rounded font-mono text-[11px]"
-                />
+              <div className="p-3.5 bg-zinc-50 rounded-lg border border-zinc-200 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-xs text-zinc-900">Wakil Ketua BEM FEB UTU</span>
+                  <span className="text-[10px] text-zinc-400 font-mono">Presidium 2</span>
+                </div>
+                <div>
+                  <label className="block text-[11px] text-zinc-600 mb-1">Nama Lengkap Wakil</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Andreansyah Nuddin"
+                    value={formData.sambutan.wakilName}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        sambutan: { ...formData.sambutan, wakilName: e.target.value },
+                      })
+                    }
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-300 rounded text-xs font-medium focus:ring-1 focus:ring-[#800016]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-zinc-600 mb-1">NIM Wakil</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: 210101002"
+                    value={formData.sambutan.wakilNim}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        sambutan: { ...formData.sambutan, wakilNim: e.target.value },
+                      })
+                    }
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-300 rounded font-mono text-xs focus:ring-1 focus:ring-[#800016]"
+                  />
+                </div>
               </div>
             </div>
 

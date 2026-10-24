@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBEM } from '../../context/BEMContext';
 import { UserCheck, Building2, Quote, Users } from 'lucide-react';
+import { formatLeaderDisplay } from '../../utils/leaderUtils';
 
 export const AboutCabinetSection: React.FC = () => {
   const { siteConfig, departments, cabinetMembers } = useBEM();
@@ -30,22 +31,52 @@ export const AboutCabinetSection: React.FC = () => {
                 referrerPolicy="no-referrer"
                 className="w-full h-auto aspect-4/3 object-cover"
               />
-              <div className="p-3.5 bg-[#800016] text-white">
-                <div className="flex flex-wrap items-start justify-between gap-2 text-xs">
-                  <div>
-                    <p className="font-semibold text-white">{siteConfig.sambutan.ketuaName}</p>
-                    <p className="text-rose-200 text-[10px] font-mono">
-                      {siteConfig.sambutan.ketuaRole} {siteConfig.sambutan.ketuaNim && `· NIM ${siteConfig.sambutan.ketuaNim}`}
-                    </p>
+              {(() => {
+                const ketua = formatLeaderDisplay(
+                  siteConfig.sambutan.ketuaName,
+                  siteConfig.sambutan.ketuaRole,
+                  siteConfig.sambutan.ketuaNim,
+                  'Ketua BEM FEB UTU'
+                );
+                const wakil = formatLeaderDisplay(
+                  siteConfig.sambutan.wakilName,
+                  siteConfig.sambutan.wakilRole,
+                  siteConfig.sambutan.wakilNim,
+                  'Wakil Ketua BEM FEB UTU'
+                );
+                return (
+                  <div className="p-3.5 bg-gradient-to-r from-[#800016] to-[#5a000f] text-white border-t border-rose-900/40">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="border-b sm:border-b-0 sm:border-r border-rose-800/60 pb-2 sm:pb-0 sm:pr-3">
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-rose-300">
+                          {ketua.role}
+                        </span>
+                        <p className="font-bold text-white text-sm leading-snug">
+                          {ketua.name}
+                        </p>
+                        {ketua.nim && (
+                          <p className="text-rose-200 text-[10px] font-mono mt-0.5">
+                            NIM {ketua.nim}
+                          </p>
+                        )}
+                      </div>
+                      <div className="sm:pl-1 sm:text-right">
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-rose-300">
+                          {wakil.role}
+                        </span>
+                        <p className="font-bold text-white text-sm leading-snug">
+                          {wakil.name}
+                        </p>
+                        {wakil.nim && (
+                          <p className="text-rose-200 text-[10px] font-mono mt-0.5">
+                            NIM {wakil.nim}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-white">{siteConfig.sambutan.wakilName}</p>
-                    <p className="text-rose-200 text-[10px] font-mono">
-                      {siteConfig.sambutan.wakilRole} {siteConfig.sambutan.wakilNim && `· NIM ${siteConfig.sambutan.wakilNim}`}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
             </div>
           </div>
 

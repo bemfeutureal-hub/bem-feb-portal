@@ -113,20 +113,21 @@ export const initialSiteConfig: SiteConfig = {
     },
   ],
   sambutan: {
-    ketuaName: 'Ketua BEM FEB UTU',
+    ketuaName: 'Ahmad Saifullah',
     ketuaNim: '',
     ketuaRole: 'Ketua BEM FEB UTU',
-    wakilName: 'Wakil Ketua BEM FEB UTU',
+    wakilName: 'Andreansyah Nuddin',
     wakilNim: '',
     wakilRole: 'Wakil Ketua BEM FEB UTU',
     leadersImage: '',
-    quote: '"Isi kutipan sambutan di sini melalui Dashboard Admin."',
+    quote: '"Menghubungkan Aspirasi, Menghadirkan Solusi Nyata demi Kemajuan Mahasiswa FEB."',
     fullMessage: 'Selamat datang di portal resmi BEM FEB UTU. Silakan isi pesan sambutan melalui Dashboard Admin → Kustomisasi Website.',
   },
-  visi: 'Isi visi kabinet di Dashboard Admin → Kustomisasi Website.',
+  visi: 'Terwujudnya BEM FEB UTU yang progresif, inklusif, dan solutif sebagai katalisator pergerakan dan pelayanan mahasiswa.',
   misi: [
-    'Isi misi 1 melalui Dashboard Admin.',
-    'Isi misi 2 melalui Dashboard Admin.',
+    'Membangun tata kelola organisasi yang transparan, profesional, dan akuntabel.',
+    'Mengawal advokasi hak-hak mahasiswa dan kesejahteraan akademik secara tanggap dan berkeadilan.',
+    'Memfasilitasi pengembangan potensi, riset, dan daya saing mahasiswa FEB di kancah regional dan nasional.',
   ],
   contact: {
     email: '',
@@ -138,36 +139,92 @@ export const initialSiteConfig: SiteConfig = {
   },
 };
 
-// ── Departemen kosong — isi via Admin Dashboard ────────────────────────────
+// ── Departemen ─────────────────────────────────────────────────────────────
 export const initialDepartments: Department[] = [
   {
     id: 'dept-bph',
     name: 'Teras / Badan Pengurus Harian (BPH)',
     code: 'BPH',
     category: 'Badan Pengurus Harian',
-    description: 'Isi deskripsi BPH melalui Dashboard Admin → Departemen & Pengurus.',
-    focus: 'Tata Kelola Administrasi, Finansial & Supervisi Organisasi',
-    kadepName: 'Nama Sekretaris Jenderal',
+    description: 'Badan Pengurus Harian (BPH) / Teras bertindak sebagai poros pimpinan utama yang mengoordinasikan seluruh gerak organisasi, administrasi persuratan, dan tata kelola anggaran keuangan BEM FEB UTU.',
+    focus: 'Supervisi Eksekutif, Tata Kelola Administrasi & Kebendaharaan Organisasi',
+    kadepName: 'Ahmad Saifullah',
     kadepNim: '',
-    kadepProdi: '',
-    kadepQuote: '',
+    kadepProdi: 'S1 Manajemen',
+    kadepQuote: 'Menghubungkan aspirasi, menghadirkan solusi nyata demi kemajuan mahasiswa FEB UTU.',
   },
   {
     id: 'dept-adkesma',
     name: 'Departemen Advokasi & Kesejahteraan Mahasiswa (Adkesma)',
     code: 'ADKESMA',
     category: 'Departemen',
-    description: 'Isi deskripsi departemen melalui Dashboard Admin → Departemen & Pengurus.',
+    description: 'Departemen yang berfokus pada pendampingan hak mahasiswa, penyesuaian UKT, fasilitas kampus, dan advokasi terpadu.',
     focus: 'Pelayanan Advokasi, Penyesuaian UKT & Kesejahteraan Mahasiswa',
-    kadepName: 'Nama Ketua Departemen',
+    kadepName: 'Ketua Departemen Adkesma',
     kadepNim: '',
-    kadepProdi: '',
-    kadepQuote: '',
+    kadepProdi: 'S1 Ekonomi Pembangunan',
+    kadepQuote: 'Hadir mendengarkan, bergerak mendampingi, menuntaskan aspirasi.',
   },
 ];
 
-// ── Semua array data awalnya kosong — diisi via Admin Dashboard ──────────────
-export const initialCabinetMembers: CabinetMember[] = [];
+// ── Anggota Kabinet BPH (Ketua, Wakil, Sekum, Wasekum, Bendum, Wabendum) ────
+export const initialCabinetMembers: CabinetMember[] = [
+  {
+    id: 'bph-1',
+    name: 'Ahmad Saifullah',
+    role: 'Ketua BEM FEB UTU',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Manajemen',
+    generation: '2022',
+    isKadep: true,
+  },
+  {
+    id: 'bph-2',
+    name: 'Andreansyah Nuddin',
+    role: 'Wakil Ketua BEM FEB UTU',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Ekonomi Pembangunan',
+    generation: '2022',
+  },
+  {
+    id: 'bph-3',
+    name: 'Sekretaris Umum',
+    role: 'Sekretaris Umum',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Akuntansi',
+    generation: '2023',
+  },
+  {
+    id: 'bph-4',
+    name: 'Wakil Sekretaris Umum',
+    role: 'Wakil Sekretaris Umum',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Manajemen',
+    generation: '2023',
+  },
+  {
+    id: 'bph-5',
+    name: 'Bendahara Umum',
+    role: 'Bendahara Umum',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Akuntansi',
+    generation: '2023',
+  },
+  {
+    id: 'bph-6',
+    name: 'Wakil Bendahara Umum',
+    role: 'Wakil Bendahara Umum',
+    departmentId: 'dept-bph',
+    departmentName: 'Teras / Badan Pengurus Harian (BPH)',
+    prodi: 'S1 Ekonomi Pembangunan',
+    generation: '2023',
+  },
+];
 
 export const initialPosts: Post[] = [];
 

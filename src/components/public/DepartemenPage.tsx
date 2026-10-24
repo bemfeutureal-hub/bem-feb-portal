@@ -15,13 +15,17 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
+import { formatLeaderDisplay } from '../../utils/leaderUtils';
+
 interface DepartemenPageProps {
   department: Department;
   onClose: () => void;
 }
 
 export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onClose }) => {
-  const { cabinetMembers } = useBEM();
+  const { cabinetMembers, siteConfig } = useBEM();
+
+  const isBph = department.id === 'dept-bph' || department.category === 'Badan Pengurus Harian';
 
   const members = cabinetMembers.filter(
     (m) => m.departmentId === department.id && !m.isKadep
@@ -163,63 +167,175 @@ export const DepartemenPage: React.FC<DepartemenPageProps> = ({ department, onCl
           </div>
         )}
 
-        {/* ── KETUA DEPARTEMEN ── */}
-        <div>
-          <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
-            <UserCheck className="w-5 h-5" style={{ color: accent }} />
-            Ketua Departemen
-          </h2>
-          <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col sm:flex-row items-start gap-5 max-w-lg">
-            {department.kadepPhoto ? (
-              <img
-                src={department.kadepPhoto}
-                alt={department.kadepName}
-                className="w-20 h-20 rounded-xl object-cover border-2 border-zinc-100 shadow-sm shrink-0"
-              />
-            ) : (
-              <div
-                className="w-20 h-20 rounded-xl text-white font-bold text-xl flex items-center justify-center shrink-0"
-                style={{ backgroundColor: accent }}
-              >
-                {department.kadepName.split(' ').map(n => n[0]).slice(0, 2).join('')}
+        {/* ── PIMPINAN / KEPALA ── */}
+        {isBph ? (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
+                <UserCheck className="w-5 h-5" style={{ color: accent }} />
+                Presidium Mahasiswa (Ketua & Wakil Ketua)
+              </h2>
+              {(() => {
+                const ketua = formatLeaderDisplay(
+                  siteConfig.sambutan.ketuaName,
+                  siteConfig.sambutan.ketuaRole,
+                  siteConfig.sambutan.ketuaNim,
+                  'Ketua BEM FEB UTU'
+                );
+                const wakil = formatLeaderDisplay(
+                  siteConfig.sambutan.wakilName,
+                  siteConfig.sambutan.wakilRole,
+                  siteConfig.sambutan.wakilNim,
+                  'Wakil Ketua BEM FEB UTU'
+                );
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4">
+                      <div
+                        className="w-16 h-16 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs"
+                        style={{ backgroundColor: accent }}
+                      >
+                        {ketua.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      </div>
+                      <div>
+                        <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
+                          {ketua.role}
+                        </span>
+                        <h3 className="font-bold text-zinc-950 text-base">{ketua.name}</h3>
+                        {ketua.nim && <p className="text-xs text-zinc-400 font-mono mt-0.5">NIM {ketua.nim}</p>}
+                        <p className="text-xs text-zinc-500 mt-1">Presidium Utama BEM FEB UTU</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-zinc-200 p-5 flex items-start gap-4">
+                      <div
+                        className="w-16 h-16 rounded-xl text-white font-bold text-lg flex items-center justify-center shrink-0 shadow-xs"
+                        style={{ backgroundColor: accent }}
+                      >
+                        {wakil.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      </div>
+                      <div>
+                        <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#800016] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mb-1">
+                          {wakil.role}
+                        </span>
+                        <h3 className="font-bold text-zinc-950 text-base">{wakil.name}</h3>
+                        {wakil.nim && <p className="text-xs text-zinc-400 font-mono mt-0.5">NIM {wakil.nim}</p>}
+                        <p className="text-xs text-zinc-500 mt-1">Presidium Pendamping BEM FEB UTU</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5" style={{ color: accent }} />
+                Kesekretariatan & Kebendaharaan Umum BPH
+              </h2>
+              {(() => {
+                const bphPositions = [
+                  { role: 'Sekretaris Umum', sub: 'Pimpinan Kesekretariatan', defName: 'Sekretaris Umum', prodi: 'S1 Akuntansi' },
+                  { role: 'Wakil Sekretaris Umum', sub: 'Administrasi & Persuratan', defName: 'Wakil Sekretaris Umum', prodi: 'S1 Manajemen' },
+                  { role: 'Bendahara Umum', sub: 'Pimpinan Kebendaharaan', defName: 'Bendahara Umum', prodi: 'S1 Akuntansi' },
+                  { role: 'Wakil Bendahara Umum', sub: 'Anggaran & Finansial', defName: 'Wakil Bendahara Umum', prodi: 'S1 Ekonomi Pembangunan' },
+                ];
+
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {bphPositions.map((pos) => {
+                      const matchedMember = members.find(m =>
+                        m.role.toLowerCase().includes(pos.role.toLowerCase())
+                      );
+                      const displayName = matchedMember ? matchedMember.name : pos.defName;
+                      const displayNim = matchedMember?.nim;
+                      const displayProdi = matchedMember?.prodi || pos.prodi;
+                      const displayPhoto = matchedMember?.photoUrl;
+
+                      return (
+                        <div key={pos.role} className="bg-white rounded-xl border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-zinc-300 transition-all">
+                          {displayPhoto ? (
+                            <img src={displayPhoto} alt={displayName} className="w-16 h-16 rounded-full object-cover border-2 border-zinc-100 mb-3 shadow-xs" />
+                          ) : (
+                            <div className="w-16 h-16 rounded-full bg-rose-50 text-[#800016] border border-rose-200 flex items-center justify-center font-bold text-base mb-3 shadow-xs">
+                              {displayName.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                            </div>
+                          )}
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#800016] mb-0.5">
+                            {pos.role}
+                          </span>
+                          <p className="text-[10px] text-zinc-400 font-mono mb-2">{pos.sub}</p>
+                          <h4 className="font-bold text-xs text-zinc-950 leading-tight mb-1">{displayName}</h4>
+                          {displayNim && <p className="text-[10px] text-zinc-500 font-mono">{displayNim}</p>}
+                          <p className="text-[10px] text-zinc-400 mt-0.5">{displayProdi}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div>
+              <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
+                <UserCheck className="w-5 h-5" style={{ color: accent }} />
+                Ketua Departemen
+              </h2>
+              <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col sm:flex-row items-start gap-5 max-w-lg">
+                {department.kadepPhoto ? (
+                  <img
+                    src={department.kadepPhoto}
+                    alt={department.kadepName}
+                    className="w-20 h-20 rounded-xl object-cover border-2 border-zinc-100 shadow-sm shrink-0"
+                  />
+                ) : (
+                  <div
+                    className="w-20 h-20 rounded-xl text-white font-bold text-xl flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: accent }}
+                  >
+                    {department.kadepName.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                  </div>
+                )}
+                <div>
+                  <p className="font-bold text-zinc-950 text-lg">{department.kadepName}</p>
+                  <p className="text-sm text-zinc-500 mb-1">Ketua {department.code}</p>
+                  {department.kadepProdi && (
+                    <p className="text-xs text-zinc-400 font-mono">{department.kadepProdi}{department.kadepNim && ` · NIM ${department.kadepNim}`}</p>
+                  )}
+                  {department.kadepQuote && (
+                    <blockquote className="mt-3 text-sm italic text-zinc-600 border-l-2 pl-3" style={{ borderColor: accent }}>
+                      &ldquo;{department.kadepQuote}&rdquo;
+                    </blockquote>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ── JAJARAN PENGURUS ── */}
+            {members.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5" style={{ color: accent }} />
+                  Jajaran Pengurus & Staf
+                  <span className="text-xs font-mono text-zinc-400 font-normal">({members.length} orang)</span>
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {members.map((m) => (
+                    <MemberCard key={m.id} member={m} accent={accent} />
+                  ))}
+                </div>
               </div>
             )}
-            <div>
-              <p className="font-bold text-zinc-950 text-lg">{department.kadepName}</p>
-              <p className="text-sm text-zinc-500 mb-1">Ketua {department.code}</p>
-              {department.kadepProdi && (
-                <p className="text-xs text-zinc-400 font-mono">{department.kadepProdi}{department.kadepNim && ` · NIM ${department.kadepNim}`}</p>
-              )}
-              {department.kadepQuote && (
-                <blockquote className="mt-3 text-sm italic text-zinc-600 border-l-2 pl-3" style={{ borderColor: accent }}>
-                  &ldquo;{department.kadepQuote}&rdquo;
-                </blockquote>
-              )}
-            </div>
-          </div>
-        </div>
 
-        {/* ── JAJARAN PENGURUS ── */}
-        {members.length > 0 && (
-          <div>
-            <h2 className="text-lg font-semibold text-zinc-950 mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5" style={{ color: accent }} />
-              Jajaran Pengurus & Staf
-              <span className="text-xs font-mono text-zinc-400 font-normal">({members.length} orang)</span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {members.map((m) => (
-                <MemberCard key={m.id} member={m} accent={accent} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {members.length === 0 && (
-          <div className="bg-white rounded-xl border border-dashed border-zinc-200 py-10 text-center">
-            <Users className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
-            <p className="text-zinc-400 text-sm">Belum ada staf terdaftar di departemen ini.</p>
-          </div>
+            {members.length === 0 && (
+              <div className="bg-white rounded-xl border border-dashed border-zinc-200 py-10 text-center">
+                <Users className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
+                <p className="text-zinc-400 text-sm">Belum ada staf terdaftar di departemen ini.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
