@@ -585,20 +585,20 @@ export const BEMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Asynchronously save directly to Supabase with explicit logging
     const payload = mapFrontendTicketToDb(newTicket);
     console.log('[Supabase] Mengirim tiket lapor ke cloud:', payload);
-    supabase
-      .from('lapor_tickets')
-      .insert(payload)
-      .then(({ data, error }) => {
+
+    (async () => {
+      try {
+        const { data, error } = await supabase.from('lapor_tickets').insert(payload);
         if (error) {
           console.error('[Supabase Error] Gagal menyimpan lapor_tickets:', error);
           showToast(`Peringatan: Gagal sinkron ke database cloud: ${error.message}`);
         } else {
           console.log('[Supabase Success] Tiket berhasil tersimpan di cloud:', data);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error('[Supabase Catch] Error jaringan:', err);
-      });
+      }
+    })();
 
     return newId;
   };
