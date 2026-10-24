@@ -110,6 +110,29 @@ CREATE TABLE IF NOT EXISTS downloads (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 8. Tabel Akun Administrator & Pengurus (Akses Terbatas & Terenkripsi)
+CREATE TABLE IF NOT EXISTS admin_users (
+  username TEXT PRIMARY KEY,
+  display_name TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  role TEXT DEFAULT 'admin',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  last_login TIMESTAMPTZ
+);
+
+-- =========================================================================
+-- INDEX OPTIMASI QUERY (FRONTEND & BACKEND SPEED UP)
+-- =========================================================================
+CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug);
+CREATE INDEX IF NOT EXISTS idx_posts_category ON posts(category);
+CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_program_kerja_dept ON program_kerja(department);
+CREATE INDEX IF NOT EXISTS idx_program_kerja_status ON program_kerja(status);
+CREATE INDEX IF NOT EXISTS idx_cabinet_members_dept ON cabinet_members(department_id);
+CREATE INDEX IF NOT EXISTS idx_lapor_tickets_status ON lapor_tickets(status);
+CREATE INDEX IF NOT EXISTS idx_lapor_tickets_created ON lapor_tickets(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_downloads_cat ON downloads(category);
+
 -- =========================================================================
 -- AKTIFKAN ROW LEVEL SECURITY (RLS) & KEBIJAKAN AKSES (POLICIES)
 -- Supaya website publik & panel admin bisa membaca dan menulis data
@@ -122,6 +145,7 @@ ALTER TABLE program_kerja ENABLE ROW LEVEL SECURITY;
 ALTER TABLE departments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cabinet_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE downloads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
 -- Kebijakan Akses: Izinkan baca publik (SELECT) & buat/ubah (INSERT/UPDATE/DELETE) via anon key
 DO $$ 
@@ -169,4 +193,10 @@ BEGIN
   CREATE POLICY "Public can read downloads" ON downloads FOR SELECT USING (true);
   DROP POLICY IF EXISTS "Public can manage downloads" ON downloads;
   CREATE POLICY "Public can manage downloads" ON downloads FOR ALL USING (true) WITH CHECK (true);
+
+  -- admin_users policies
+  DROP POLICY IF EXISTS "Allow select admin_users" ON admin_users;
+  CREATE POLICY "Allow select admin_users" ON admin_users FOR SELECT USING (true);
+  DROP POLICY IF EXISTS "Allow manage admin_users" ON admin_users;
+  CREATE POLICY "Allow manage admin_users" ON admin_users FOR ALL USING (true) WITH CHECK (true);
 END $$;

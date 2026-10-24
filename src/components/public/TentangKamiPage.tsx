@@ -92,6 +92,8 @@ export const TentangKamiPage: React.FC<TentangKamiPageProps> = ({ onNavigate, on
                   src={siteConfig.sambutan.leadersImage || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80'}
                   alt="Presidium BEM FEB UTU"
                   referrerPolicy="no-referrer"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto aspect-4/3 object-cover"
                 />
                 <div className="p-4 bg-gradient-to-r from-[#800016] to-[#5a000f] text-white border-t border-rose-900/40">

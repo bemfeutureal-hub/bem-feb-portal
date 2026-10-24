@@ -67,7 +67,11 @@ export const AdminAccountView: React.FC = () => {
     if (addPassword.length < 8) {
       setAddError('Password minimal 8 karakter.'); return;
     }
-    await addAdminUser(addUsername, addDisplay || addUsername, addPassword, addRole);
+    const res = await addAdminUser(addUsername, addDisplay || addUsername, addPassword, addRole);
+    if (!res.success) {
+      setAddError(res.message || 'Gagal menambahkan akun.');
+      return;
+    }
     setAddOpen(false);
     setAddUsername(''); setAddDisplay(''); setAddPassword(''); setAddError('');
   };

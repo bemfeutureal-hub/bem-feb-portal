@@ -29,6 +29,8 @@ export const AboutCabinetSection: React.FC = () => {
                 src={siteConfig.sambutan.leadersImage}
                 alt="Presidium BEM FEB Universitas Teuku Umar"
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto aspect-4/3 object-cover"
               />
               {(() => {

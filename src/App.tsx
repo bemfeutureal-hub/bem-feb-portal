@@ -22,17 +22,28 @@ import { LaporCreateModal } from './components/public/LaporCreateModal';
 import { LaporTrackerModal } from './components/public/LaporTrackerModal';
 import { ArticleDetailModal } from './components/public/ArticleDetailModal';
 
-import { AdminLoginPage } from './components/admin/AdminLoginPage';
-import { AdminLayout } from './components/admin/AdminLayout';
-import { AdminDashboardView } from './components/admin/AdminDashboardView';
-import { AdminLaporView } from './components/admin/AdminLaporView';
-import { AdminArticlesView } from './components/admin/AdminArticlesView';
-import { AdminCustomizerView } from './components/admin/AdminCustomizerView';
-import { AdminProkerView } from './components/admin/AdminProkerView';
-import { AdminCabinetView } from './components/admin/AdminCabinetView';
-import { AdminAccountView } from './components/admin/AdminAccountView';
-import { DepartemenCustomizerView } from './components/admin/DepartemenCustomizerView';
-import { AdminDownloadsView } from './components/admin/AdminDownloadsView';
+// ── Lazy load Admin components to keep public bundle ultra-fast ──────────────
+const AdminLoginPage = React.lazy(() => import('./components/admin/AdminLoginPage').then(m => ({ default: m.AdminLoginPage })));
+const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout').then(m => ({ default: m.AdminLayout })));
+const AdminDashboardView = React.lazy(() => import('./components/admin/AdminDashboardView').then(m => ({ default: m.AdminDashboardView })));
+const AdminLaporView = React.lazy(() => import('./components/admin/AdminLaporView').then(m => ({ default: m.AdminLaporView })));
+const AdminArticlesView = React.lazy(() => import('./components/admin/AdminArticlesView').then(m => ({ default: m.AdminArticlesView })));
+const AdminCustomizerView = React.lazy(() => import('./components/admin/AdminCustomizerView').then(m => ({ default: m.AdminCustomizerView })));
+const AdminProkerView = React.lazy(() => import('./components/admin/AdminProkerView').then(m => ({ default: m.AdminProkerView })));
+const AdminCabinetView = React.lazy(() => import('./components/admin/AdminCabinetView').then(m => ({ default: m.AdminCabinetView })));
+const AdminAccountView = React.lazy(() => import('./components/admin/AdminAccountView').then(m => ({ default: m.AdminAccountView })));
+const DepartemenCustomizerView = React.lazy(() => import('./components/admin/DepartemenCustomizerView').then(m => ({ default: m.DepartemenCustomizerView })));
+const AdminDownloadsView = React.lazy(() => import('./components/admin/AdminDownloadsView').then(m => ({ default: m.AdminDownloadsView })));
+
+const AdminLoadingFallback: React.FC = () => (
+  <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-8 h-8 border-3 border-[#800016] border-t-transparent rounded-full animate-spin" />
+      <span className="text-xs text-zinc-500 font-mono">Memuat Sistem Admin...</span>
+    </div>
+  </div>
+);
+
 import { Department } from './types';
 
 // ── Public page types ────────────────────────────────────────────────────────
@@ -229,10 +240,12 @@ const MainContent: React.FC = () => {
   // ── Login page ─────────────────────────────────────────────────────────────
   if (appView === 'login') {
     return (
-      <AdminLoginPage
-        onBack={() => { setAppView('public'); navigatePublic('home'); }}
-        onLoginSuccess={handleLoginSuccess}
-      />
+      <React.Suspense fallback={<AdminLoadingFallback />}>
+        <AdminLoginPage
+          onBack={() => { setAppView('public'); navigatePublic('home'); }}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </React.Suspense>
     );
   }
 
@@ -314,8 +327,7 @@ const MainContent: React.FC = () => {
 
       {/* ── ADMIN VIEW ── */}
       {appView === 'admin' && (
-        <>
-          {/* Dept preview mode */}
+        <React.Suspense fallback={<AdminLoadingFallback />}>
           {previewDept ? (
             <div className="min-h-screen">
               <div className="sticky top-0 z-50 bg-amber-400 text-black text-xs px-4 py-2 flex items-center justify-between font-semibold">
@@ -344,7 +356,7 @@ const MainContent: React.FC = () => {
               <ArticleDetailModal />
             </AdminLayout>
           )}
-        </>
+        </React.Suspense>
       )}
     </div>
   );
