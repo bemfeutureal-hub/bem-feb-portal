@@ -582,10 +582,23 @@ export const BEMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setLaporTickets((prev) => [newTicket, ...prev]);
     showToast(`Aduan terkirim dengan Kode Tiket: ${newId}`);
 
-    // Asynchronously save directly to Supabase
-    supabase.from('lapor_tickets').insert(mapFrontendTicketToDb(newTicket)).then(({ error }) => {
-      if (error) console.error('Supabase error addLaporTicket:', error);
-    });
+    // Asynchronously save directly to Supabase with explicit logging
+    const payload = mapFrontendTicketToDb(newTicket);
+    console.log('[Supabase] Mengirim tiket lapor ke cloud:', payload);
+    supabase
+      .from('lapor_tickets')
+      .insert(payload)
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('[Supabase Error] Gagal menyimpan lapor_tickets:', error);
+          showToast(`Peringatan: Gagal sinkron ke database cloud: ${error.message}`);
+        } else {
+          console.log('[Supabase Success] Tiket berhasil tersimpan di cloud:', data);
+        }
+      })
+      .catch((err) => {
+        console.error('[Supabase Catch] Error jaringan:', err);
+      });
 
     return newId;
   };
