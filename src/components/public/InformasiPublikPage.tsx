@@ -91,7 +91,8 @@ const ArticleContent: React.FC<{ html: string }> = ({ html }) => {
 const ShareSection: React.FC<{ post: Post; accentColor: string }> = ({ post, accentColor }) => {
   const [copied, setCopied] = useState(false);
   const identifier = post.slug || post.id;
-  const canonicalUrl = `${window.location.origin}${window.location.pathname}?page=informasi-publik&post=${encodeURIComponent(identifier)}`;
+  // WordPress-like clean permalink format: /warta/:slug
+  const canonicalUrl = `${window.location.origin}/warta/${encodeURIComponent(identifier)}`;
   const url = encodeURIComponent(canonicalUrl);
   const title = encodeURIComponent(post.title);
 

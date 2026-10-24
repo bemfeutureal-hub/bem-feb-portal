@@ -8,24 +8,12 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "query",
-          "key": "post"
-        }
-      ],
-      "destination": "/api/share"
+      "source": "/warta/(.*)",
+      "destination": "/api/post?slug=$1"
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "query",
-          "key": "slug"
-        }
-      ],
-      "destination": "/api/share"
+      "source": "/post/(.*)",
+      "destination": "/api/post?slug=$1"
     },
     {
       "source": "/(.*)",

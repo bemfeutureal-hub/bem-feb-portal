@@ -514,9 +514,9 @@ export const AdminArticlesView: React.FC = () => {
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => {
-                      const shareUrl = `${window.location.origin}${window.location.pathname}?page=informasi-publik&post=${encodeURIComponent(post.slug || post.id)}`;
+                      const shareUrl = `${window.location.origin}/warta/${encodeURIComponent(post.slug || post.id)}`;
                       navigator.clipboard.writeText(shareUrl);
-                      alert('Link publikasi berhasil disalin ke clipboard! Siap dibagikan ke medsos.');
+                      alert('Link publikasi resmi (/warta/...) berhasil disalin ke clipboard! Siap dibagikan ke medsos dengan foto berita.');
                     }}
                     title="Salin Link Publikasi Medsos"
                     className="p-1.5 text-zinc-500 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 rounded-md transition-colors"

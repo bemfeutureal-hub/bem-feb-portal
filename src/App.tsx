@@ -73,6 +73,16 @@ const MainContent: React.FC = () => {
         return;
       }
 
+      // Check pathname (clean URLs WordPress-style like /warta/:slug or /post/:slug)
+      const pathname = window.location.pathname;
+      const wartaMatch = pathname.match(/^\/(?:warta|post)\/([^/]+)/i);
+      if (wartaMatch && wartaMatch[1]) {
+        setPendingPostId(decodeURIComponent(wartaMatch[1]));
+        setPublicPage('informasi-publik');
+        setAppView('public');
+        return;
+      }
+
       if (postParam) {
         setPendingPostId(postParam);
         setPublicPage('informasi-publik');
