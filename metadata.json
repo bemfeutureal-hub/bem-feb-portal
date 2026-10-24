@@ -1,0 +1,6 @@
+{
+  "name": "BEM FEB Portal & CMS - Lapor BEM FEB",
+  "description": "Website resmi organisasi BEM Fakultas Ekonomi dan Bisnis dengan sistem manajemen konten (CMS) bergaya WordPress, kustomisasi web, dan portal advokasi Lapor BEM FEB.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
