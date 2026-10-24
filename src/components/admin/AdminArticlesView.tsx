@@ -100,7 +100,7 @@ export const AdminArticlesView: React.FC = () => {
     }
   };
 
-  const handleSave = (saveStatus: 'published' | 'draft') => {
+  const handleSave = async (saveStatus: 'published' | 'draft') => {
     if (!title.trim() || !content.trim()) {
       alert('Mohon lengkapi judul dan isi artikel.');
       return;
@@ -116,7 +116,7 @@ export const AdminArticlesView: React.FC = () => {
     const autoReadTime = `${estimatedMinutes} menit baca`;
 
     if (editingPostId) {
-      updatePost(editingPostId, {
+      await updatePost(editingPostId, {
         title: title.trim(),
         slug: slug.trim() || 'artikel-bem-feb',
         category,
@@ -129,7 +129,7 @@ export const AdminArticlesView: React.FC = () => {
         featuredImage,
       });
     } else {
-      addPost({
+      await addPost({
         title: title.trim(),
         slug: slug.trim() || 'artikel-bem-feb',
         category,

@@ -511,11 +511,19 @@ export const BEMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       views: 0,
     };
     setPosts((prev) => [newPost, ...prev]);
-    showToast('Warta baru berhasil diterbitkan.');
+
     try {
-      await supabase.from('posts').insert(mapFrontendPostToDb(newPost));
-    } catch (err) {
-      console.error('Supabase error addPost:', err);
+      const payload = mapFrontendPostToDb(newPost);
+      const { error } = await supabase.from('posts').upsert(payload);
+      if (error) {
+        console.error('[Supabase Error addPost]:', error);
+        showToast(`Gagal sinkron ke database cloud: ${error.message}`);
+      } else {
+        showToast('Warta baru berhasil diterbitkan & tersimpan di database cloud!');
+      }
+    } catch (err: any) {
+      console.error('Supabase catch addPost:', err);
+      showToast(`Peringatan offline: ${err?.message || 'Tersimpan di memori lokal'}`);
     }
   };
 
@@ -523,14 +531,21 @@ export const BEMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setPosts((prev) =>
       prev.map((item) => (item.id === id ? { ...item, ...updatedFields } : item))
     );
-    showToast('Perubahan pos berhasil disimpan.');
+
     try {
       const existing = posts.find((p) => p.id === id);
       if (existing) {
-        await supabase.from('posts').update(mapFrontendPostToDb({ ...existing, ...updatedFields })).eq('id', id);
+        const payload = mapFrontendPostToDb({ ...existing, ...updatedFields });
+        const { error } = await supabase.from('posts').upsert(payload);
+        if (error) {
+          console.error('[Supabase Error updatePost]:', error);
+          showToast(`Gagal update ke database cloud: ${error.message}`);
+        } else {
+          showToast('Perubahan artikel berhasil disimpan ke database cloud!');
+        }
       }
-    } catch (err) {
-      console.error('Supabase error updatePost:', err);
+    } catch (err: any) {
+      console.error('Supabase catch updatePost:', err);
     }
   };
 
