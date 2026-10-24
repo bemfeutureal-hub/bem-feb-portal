@@ -34,9 +34,9 @@ export const initialVisuals: VisualCustomization = {
   headerCtaText: 'Ajukan Aduan',
   headerCtaBg: '#800016',
 
-  heroBgGradientStart: '#ba0f23',
-  heroBgGradientMiddle: '#cc142a',
-  heroBgGradientEnd: '#990d1c',
+  heroBgGradientStart: '#dc2626',
+  heroBgGradientMiddle: '#ba0f23',
+  heroBgGradientEnd: '#800016',
   heroOverlayPattern: true,
 
   statsBackground: '#ffffff',

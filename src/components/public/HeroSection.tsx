@@ -60,30 +60,53 @@ export const HeroSection: React.FC = () => {
     }
   };
 
-  const bgStyle = {
-    background: `linear-gradient(to right, ${visuals.heroBgGradientStart || '#ba0f23'}, ${visuals.heroBgGradientMiddle || '#cc142a'}, ${visuals.heroBgGradientEnd || '#990d1c'})`,
+  // Helper to convert hex to rgba for translucent red gradient
+  const hexToRgba = (hex: string, alpha: number): string => {
+    if (!hex) return `rgba(220, 38, 38, ${alpha})`;
+    const clean = hex.replace('#', '').trim();
+    let r = 220, g = 38, b = 38;
+    if (clean.length === 3) {
+      r = parseInt(clean[0] + clean[0], 16) || 220;
+      g = parseInt(clean[1] + clean[1], 16) || 38;
+      b = parseInt(clean[2] + clean[2], 16) || 38;
+    } else if (clean.length >= 6) {
+      r = parseInt(clean.substring(0, 2), 16) || 220;
+      g = parseInt(clean.substring(2, 4), 16) || 38;
+      b = parseInt(clean.substring(4, 6), 16) || 38;
+    }
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   };
+
+  const heroBgImage = siteConfig.heroImage || '/src/assets/images/bem_hero_campus_1792265588786.jpg';
 
   return (
     <div id="beranda" className="relative">
       {/* =========================================================================
-          HERO BANNER (Customizable Background Gradients, Text & Mockup)
+          HERO BANNER (Vibrant Translucent Red Gradient & Visible Background Photo)
           ========================================================================= */}
       <section
-        style={bgStyle}
-        className="relative text-white overflow-hidden py-10 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300"
+        className="relative text-white overflow-hidden py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-zinc-950 transition-colors duration-300 min-h-[480px] flex items-center"
       >
-        {/* Background Campus Photo with Blend */}
-        {siteConfig.heroImage && (
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay pointer-events-none transition-all duration-300"
-            style={{ backgroundImage: `url(${siteConfig.heroImage})` }}
-          />
-        )}
+        {/* 1. Latar Belakang Foto Kampus / Gambar Utama (Jelas & Terlihat) */}
+        <div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 transform scale-100"
+          style={{ backgroundImage: `url(${heroBgImage})` }}
+        />
 
-        {/* Pattern overlay toggle */}
+        {/* 2. Overlay Gradasi Merah Lebih Pudar & Merah Menyala (Agar Latar Belakang Terlihat) */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-all duration-300"
+          style={{
+            background: `linear-gradient(135deg, ${hexToRgba(visuals.heroBgGradientStart || '#dc2626', 0.65)} 0%, ${hexToRgba(visuals.heroBgGradientMiddle || '#ba0f23', 0.72)} 50%, ${hexToRgba(visuals.heroBgGradientEnd || '#800016', 0.80)} 100%)`,
+          }}
+        />
+
+        {/* 3. Vignette halus untuk keterbacaan teks dan transisi elegan */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+
+        {/* 4. Pattern overlay halus */}
         {visuals.heroOverlayPattern !== false && (
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
         )}
 
         <div className="max-w-7xl mx-auto relative z-10">
