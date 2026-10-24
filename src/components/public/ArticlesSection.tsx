@@ -41,7 +41,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({ onViewAll, onO
   const handleOpenPost = (post: Post) => {
     if (onOpenPost) {
       // Terintegrasi: buka di halaman Informasi Publik
-      onOpenPost(post.id);
+      onOpenPost(post.slug || post.id);
     } else {
       // Fallback: modal lama
       incrementPostView(post.id);

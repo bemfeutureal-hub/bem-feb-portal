@@ -441,24 +441,29 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
 
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Helper matching artikel yang sangat tangguh (mencocokkan id, slug, atau URL decoded slug)
+  const findPostByIdentifier = (target?: string) => {
+    if (!target) return null;
+    const cleanTarget = decodeURIComponent(target).trim().toLowerCase();
+    return posts.find((p) => {
+      if (p.status !== 'published') return false;
+      const cleanId = (p.id || '').trim().toLowerCase();
+      const cleanSlug = (p.slug || '').trim().toLowerCase();
+      return cleanId === cleanTarget || cleanSlug === cleanTarget;
+    }) || null;
+  };
+
   const [selectedPost, setSelectedPost] = useState<Post | null>(() => {
-    if (initialPostId) {
-      const found = posts.find(
-        p => (p.id === initialPostId || p.slug === initialPostId) && p.status === 'published'
-      );
-      if (found) return found;
-    }
-    return null;
+    return findPostByIdentifier(initialPostId);
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [savedPosts, setSavedPosts] = useState<string[]>([]);
 
-  // Jika initialPostId berubah atau posts baru saja dimuat dari Supabase
+  // Jika initialPostId berubah atau posts baru saja selesai dimuat dari Supabase
   useEffect(() => {
     if (initialPostId) {
-      const found = posts.find(
-        p => (p.id === initialPostId || p.slug === initialPostId) && p.status === 'published'
-      );
+      const found = findPostByIdentifier(initialPostId);
       if (found) {
         setSelectedPost(found);
         incrementPostView(found.id);
@@ -589,7 +594,12 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
                 className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white shrink-0 shadow-sm"
                 style={{ backgroundColor: accentColor }}
               >
-                {selectedPost.author.split(' ').map(w => w[0]).slice(0, 2).join('')}
+                {(selectedPost.author || 'BEM')
+                  .split(' ')
+                  .filter(Boolean)
+                  .map(w => w[0])
+                  .slice(0, 2)
+                  .join('') || 'UTU'}
               </div>
               <div>
                 <p className="text-sm font-semibold text-zinc-900">{selectedPost.author}</p>
@@ -641,7 +651,12 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
               className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl text-white shrink-0"
               style={{ backgroundColor: accentColor }}
             >
-              {selectedPost.author.split(' ').map(w => w[0]).slice(0, 2).join('')}
+              {(selectedPost.author || 'BEM')
+                .split(' ')
+                .filter(Boolean)
+                .map(w => w[0])
+                .slice(0, 2)
+                .join('') || 'UTU'}
             </div>
             <div>
               <p className="text-xs font-mono text-zinc-400 mb-0.5 uppercase tracking-wider">Tentang Penulis</p>
