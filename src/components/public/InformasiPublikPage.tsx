@@ -466,11 +466,16 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
       const found = findPostByIdentifier(initialPostId);
       if (found) {
         setSelectedPost(found);
-        incrementPostView(found.id);
+        // Cegah kenaikan view berulang kali dalam satu sesi pembaca
+        const sessionViewKey = `bem_viewed_${found.id}`;
+        if (!sessionStorage.getItem(sessionViewKey)) {
+          sessionStorage.setItem(sessionViewKey, 'true');
+          incrementPostView(found.id);
+        }
         onPostSelect?.(found);
       }
     }
-  }, [initialPostId, posts]);
+  }, [initialPostId]);
 
   // Update dynamic document title and OpenGraph tags for social media
   useEffect(() => {
@@ -511,7 +516,11 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
   useEffect(() => { setCurrentPage(1); }, [activeCategory, searchQuery]);
 
   const handleOpenPost = (post: Post) => {
-    incrementPostView(post.id);
+    const sessionViewKey = `bem_viewed_${post.id}`;
+    if (!sessionStorage.getItem(sessionViewKey)) {
+      sessionStorage.setItem(sessionViewKey, 'true');
+      incrementPostView(post.id);
+    }
     setSelectedPost(post);
     onPostSelect?.(post);
     window.scrollTo({ top: 0, behavior: 'smooth' });
