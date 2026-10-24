@@ -12,6 +12,7 @@ interface InformasiPublikPageProps {
   onClose: () => void;
   initialCategory?: string;
   initialPostId?: string; // langsung buka artikel tertentu
+  onPostSelect?: (post: Post | null) => void;
 }
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -89,11 +90,13 @@ const ArticleContent: React.FC<{ html: string }> = ({ html }) => {
 // ─── Share Section ────────────────────────────────────────────────────────────
 const ShareSection: React.FC<{ post: Post; accentColor: string }> = ({ post, accentColor }) => {
   const [copied, setCopied] = useState(false);
-  const url = encodeURIComponent(window.location.href);
+  const identifier = post.slug || post.id;
+  const canonicalUrl = `${window.location.origin}${window.location.pathname}?page=informasi-publik&post=${encodeURIComponent(identifier)}`;
+  const url = encodeURIComponent(canonicalUrl);
   const title = encodeURIComponent(post.title);
 
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    navigator.clipboard.writeText(canonicalUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -431,6 +434,7 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
   onClose,
   initialCategory = 'Semua',
   initialPostId,
+  onPostSelect,
 }) => {
   const { posts, incrementPostView, siteConfig } = useBEM();
   const accentColor = siteConfig.visuals?.logoEmblemBg || '#800016';
@@ -438,26 +442,51 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPost, setSelectedPost] = useState<Post | null>(() => {
-    // Jika ada initialPostId, langsung cari dan set post tersebut
     if (initialPostId) {
-      const found = posts.find(p => p.id === initialPostId && p.status === 'published');
-      if (found) {
-        // Tidak increment view di sini, nanti di useEffect
-        return found;
-      }
+      const found = posts.find(
+        p => (p.id === initialPostId || p.slug === initialPostId) && p.status === 'published'
+      );
+      if (found) return found;
     }
     return null;
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [savedPosts, setSavedPosts] = useState<string[]>([]);
 
-  // Increment view sekali saat artikel dibuka dari luar (initialPostId)
+  // Jika initialPostId berubah atau posts baru saja dimuat dari Supabase
   useEffect(() => {
-    if (initialPostId && selectedPost && selectedPost.id === initialPostId) {
-      incrementPostView(initialPostId);
+    if (initialPostId) {
+      const found = posts.find(
+        p => (p.id === initialPostId || p.slug === initialPostId) && p.status === 'published'
+      );
+      if (found) {
+        setSelectedPost(found);
+        incrementPostView(found.id);
+        onPostSelect?.(found);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialPostId, posts]);
+
+  // Update dynamic document title and OpenGraph tags for social media
+  useEffect(() => {
+    if (selectedPost) {
+      document.title = `${selectedPost.title} - BEM FEB UTU`;
+      // Update meta tags for social media crawlers & browsers
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', `${selectedPost.title} - BEM FEB UTU`);
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', selectedPost.excerpt || selectedPost.title);
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', selectedPost.excerpt || selectedPost.title);
+    } else {
+      document.title = 'Informasi Publik & Warta BEM - BEM FEB UTU';
+    }
+
+    return () => {
+      document.title = 'BEM FEB Universitas Teuku Umar - Lapor BEM FEB';
+    };
+  }, [selectedPost]);
+
   const POSTS_PER_PAGE = 9;
 
   const publishedPosts = posts.filter(p => p.status === 'published');
@@ -479,12 +508,17 @@ export const InformasiPublikPage: React.FC<InformasiPublikPageProps> = ({
   const handleOpenPost = (post: Post) => {
     incrementPostView(post.id);
     setSelectedPost(post);
+    onPostSelect?.(post);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBack = () => {
-    if (selectedPost) { setSelectedPost(null); }
-    else { onClose(); }
+    if (selectedPost) {
+      setSelectedPost(null);
+      onPostSelect?.(null);
+    } else {
+      onClose();
+    }
   };
 
   const toggleSave = (id: string) => {

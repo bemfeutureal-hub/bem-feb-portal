@@ -16,6 +16,7 @@ import {
   Image as ImageIcon,
   ChevronDown,
   BarChart2,
+  Link2,
 } from 'lucide-react';
 import { Post, PostCategory } from '../../types';
 import { ImageUploadField } from '../common/ImageUploadField';
@@ -511,6 +512,17 @@ export const AdminArticlesView: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => {
+                      const shareUrl = `${window.location.origin}${window.location.pathname}?page=informasi-publik&post=${encodeURIComponent(post.slug || post.id)}`;
+                      navigator.clipboard.writeText(shareUrl);
+                      alert('Link publikasi berhasil disalin ke clipboard! Siap dibagikan ke medsos.');
+                    }}
+                    title="Salin Link Publikasi Medsos"
+                    className="p-1.5 text-zinc-500 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 rounded-md transition-colors"
+                  >
+                    <Link2 className="w-3.5 h-3.5" />
+                  </button>
                   <button
                     onClick={() => setSelectedPost(post)}
                     className="flex-1 py-1.5 text-[11px] font-medium text-zinc-700 bg-zinc-100 hover:bg-zinc-200 rounded-md transition-colors flex items-center justify-center gap-1"

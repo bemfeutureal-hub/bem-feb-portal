@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BEMProvider, useBEM } from './context/BEMContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -53,6 +53,80 @@ const MainContent: React.FC = () => {
   const [pendingPostId, setPendingPostId] = useState<string | undefined>(undefined);
   const [previewDept,   setPreviewDept]   = useState<Department | null>(null);
 
+  // ── URL Query / Routing Synchronization ────────────────────────────────────
+  useEffect(() => {
+    const parseUrlAndSyncState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page');
+      const postParam = params.get('post') || params.get('slug');
+      const deptParam = params.get('dept');
+      const viewParam = params.get('view');
+
+      if (viewParam === 'login') {
+        setAppView('login');
+        return;
+      }
+
+      if (deptParam) {
+        setPublicPage({ type: 'departemen', deptId: deptParam });
+        setAppView('public');
+        return;
+      }
+
+      if (postParam) {
+        setPendingPostId(postParam);
+        setPublicPage('informasi-publik');
+        setAppView('public');
+        return;
+      }
+
+      if (pageParam === 'informasi-publik') {
+        const cat = params.get('cat');
+        if (cat === 'Kabar Kampus') setPublicPage('informasi-publik-kabar-kampus');
+        else if (cat === 'Kajian & Opini') setPublicPage('informasi-publik-kajian');
+        else if (cat === 'Siaran Pers') setPublicPage('informasi-publik-siaran-pers');
+        else setPublicPage('informasi-publik');
+        setAppView('public');
+        return;
+      }
+
+      if (!pageParam && !postParam && !deptParam && !viewParam) {
+        // default home
+      }
+    };
+
+    parseUrlAndSyncState();
+    window.addEventListener('popstate', parseUrlAndSyncState);
+    return () => window.removeEventListener('popstate', parseUrlAndSyncState);
+  }, []);
+
+  // Update browser URL query params whenever publicPage or pendingPostId changes
+  const updateUrl = (page: PublicPage, postId?: string) => {
+    const url = new URL(window.location.href);
+    if (page === 'home' && !postId) {
+      url.search = '';
+    } else if (typeof page === 'object' && page.type === 'departemen') {
+      url.search = `?dept=${encodeURIComponent(page.deptId)}`;
+    } else if (page === 'informasi-publik' || page === 'informasi-publik-kabar-kampus' || page === 'informasi-publik-kajian' || page === 'informasi-publik-siaran-pers') {
+      const searchParts: string[] = ['page=informasi-publik'];
+      if (postId) {
+        searchParts.push(`post=${encodeURIComponent(postId)}`);
+      } else {
+        if (page === 'informasi-publik-kabar-kampus') searchParts.push('cat=Kabar+Kampus');
+        if (page === 'informasi-publik-kajian') searchParts.push('cat=Kajian+%26+Opini');
+        if (page === 'informasi-publik-siaran-pers') searchParts.push('cat=Siaran+Pers');
+      }
+      url.search = `?${searchParts.join('&')}`;
+    }
+    window.history.pushState({}, '', url.toString());
+  };
+
+  const navigatePublic = (page: PublicPage, postId?: string) => {
+    setPendingPostId(postId);
+    setPublicPage(page);
+    updateUrl(page, postId);
+  };
+
   const visuals = siteConfig.visuals;
 
   const fontStyle = visuals?.fontFamily === 'Inter'
@@ -99,13 +173,14 @@ const MainContent: React.FC = () => {
   const handleLogout = () => {
     logout();
     setAppView('public');
+    navigatePublic('home');
   };
 
   // ── Login page ─────────────────────────────────────────────────────────────
   if (appView === 'login') {
     return (
       <AdminLoginPage
-        onBack={() => setAppView('public')}
+        onBack={() => { setAppView('public'); navigatePublic('home'); }}
         onLoginSuccess={handleLoginSuccess}
       />
     );
@@ -132,19 +207,26 @@ const MainContent: React.FC = () => {
         <div className="flex-1 flex flex-col">
           <AnnouncementBar />
           <PublicNavbar
-            onNavigate={page => { setPendingPostId(undefined); setPublicPage(page); }}
+            onNavigate={page => navigatePublic(page, undefined)}
             currentPage={publicPage}
             onAdminClick={goToAdmin}
           />
 
           <main className="flex-1">
             {isDeptPage && currentDept ? (
-              <DepartemenPage department={currentDept} onClose={() => setPublicPage('home')} />
+              <DepartemenPage department={currentDept} onClose={() => navigatePublic('home')} />
             ) : isInformasiPublik ? (
               <InformasiPublikPage
                 initialCategory={getInitialCategory()}
                 initialPostId={pendingPostId}
-                onClose={() => { setPublicPage('home'); setPendingPostId(undefined); }}
+                onClose={() => navigatePublic('home')}
+                onPostSelect={(post) => {
+                  if (post) {
+                    updateUrl('informasi-publik', post.slug || post.id);
+                  } else {
+                    updateUrl('informasi-publik');
+                  }
+                }}
               />
             ) : (
               <>
@@ -152,10 +234,9 @@ const MainContent: React.FC = () => {
                 <LaporBEMSection />
                 <AboutCabinetSection />
                 <ArticlesSection
-                  onViewAll={() => { setPendingPostId(undefined); setPublicPage('informasi-publik'); }}
-                  onOpenPost={postId => {
-                    setPendingPostId(postId);
-                    setPublicPage('informasi-publik');
+                  onViewAll={() => navigatePublic('informasi-publik')}
+                  onOpenPost={postIdentifier => {
+                    navigatePublic('informasi-publik', postIdentifier);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 />
@@ -165,7 +246,7 @@ const MainContent: React.FC = () => {
             )}
           </main>
 
-          {!isInformasiPublik && !isDeptPage && <PublicFooter onNavigate={setPublicPage} onAdminClick={goToAdmin} />}
+          {!isInformasiPublik && !isDeptPage && <PublicFooter onNavigate={navigatePublic} onAdminClick={goToAdmin} />}
 
           <LaporCreateModal />
           <LaporTrackerModal />
